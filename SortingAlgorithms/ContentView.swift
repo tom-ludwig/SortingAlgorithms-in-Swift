@@ -8,14 +8,49 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var data: [DataModel] = DecodeJSON().decodeJSON("Data")
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                ForEach(data) { data in
+                    LazyVStack(alignment: .leading) {
+                        Text(data.fileURL)
+                    }
+                }
+            }
+            .navigationTitle("Sorting")
+            .toolbar {
+                ToolbarItem {
+                    Menu {
+                        Button("Bubble Sort") {
+                            SortingAlgorithms().bubbleSort(dataSet: &data)
+                        }
+                        Button("Insertion Sort") {
+                            SortingAlgorithms().insertionSort(dataSet: &data)
+                        }
+                        Button("Selection Sort") {
+                            SortingAlgorithms().selectionSort(dataSet: &data)
+                        }
+                        Button("Merge Sort") {
+                            data = SortingAlgorithms().mergeSort(dataSet: data)
+                        }
+                        Button("Quick Sort") {
+                            SortingAlgorithms().quickSort(dataSet: &data, low: 0, high: data.count - 1)
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down.square")
+                    }
+                }
+                
+                ToolbarItem {
+                    Button {
+                        data.shuffle()
+                    } label: {
+                        Image(systemName: "shuffle")
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 
